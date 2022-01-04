@@ -2,8 +2,8 @@ import json
 from typing import List
 
 # import requests
-#整数値を3つ入力させ、それらの値が小さい順（等しくてもよい）に並んでいるか判定し、
-# 小さい順に並んでいる場合はOK、そうなっていない場合はNGと表示するプログラムを作成せよ。
+# 2次方程式 ax^2 + bx + c = 0 （x^2はxの2乗の意味）の係数a, b, cを入力し、
+# 2次方程式の解が2つの実数解か、重解か、2つの虚数解かを判別するプログラムを作成せよ。
 class InvalidError(Exception):
     pass
 def is_number(x: str):
@@ -26,16 +26,14 @@ def split_numbers(text: str):
         number_list.append(i)
     return number_list
 
-def is_ascending_order(numbers:List[int])->str:
-    previous = None
-    for i in numbers:
-        if not previous:
-            previous = i
-        else:
-            if not previous <= i:
-                return "NG"
-            previous = i
-    return "OK"
+def is_quadratic_equation(numbers:List[int])->str:
+    D = numbers[1]*numbers[1]-4*numbers[0]*numbers[2]
+    if D > 0:
+        return "２つの異なる実数解"
+    elif D == 0:
+        return "重解"
+    else:
+        return "虚数解"
 
 
 
@@ -65,7 +63,7 @@ def lambda_handler(event, context):
     try:
         n = event.get('queryStringParameters').get('numbers')
         n = split_numbers(n)
-        n = is_ascending_order(n)
+        n = is_quadratic_equation(n)
         print(n)
     except:
         return{
