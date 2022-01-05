@@ -2,8 +2,9 @@ import json
 from typing import List
 
 # import requests
-# 2次方程式 ax^2 + bx + c = 0 （x^2はxの2乗の意味）の係数a, b, cを入力し、
-# 2次方程式の解が2つの実数解か、重解か、2つの虚数解かを判別するプログラムを作成せよ。
+# 換算したい金額（円単位）と1ドル何円かを整数値で入力すると、入力した金額が何ドル何セントか計算して表示するプログラムを作成せよ。
+# 1セントは1/100ドルである。結果は整数値でよい（1セント未満の端数切り捨て）。
+
 class InvalidError(Exception):
     pass
 def is_number(x: str):
@@ -26,14 +27,13 @@ def split_numbers(text: str):
         number_list.append(i)
     return number_list
 
-def is_quadratic_equation(numbers:List[int])->str:
-    D = numbers[1]*numbers[1]-4*numbers[0]*numbers[2]
-    if D > 0:
-        return "２つの異なる実数解"
-    elif D == 0:
-        return "重解"
-    else:
-        return "虚数解"
+def is_currency_conversion(numbers:List[int])->str:
+    d = numbers[0]/numbers[1]
+    d = int(d)
+    s = d*100/numbers[1]
+    s = int(s)
+    return d,"ドル",s,"セント"
+
 
 
 
@@ -63,13 +63,13 @@ def lambda_handler(event, context):
     try:
         n = event.get('queryStringParameters').get('numbers')
         n = split_numbers(n)
-        n = is_quadratic_equation(n)
+        n = is_currency_conversion(n)
         print(n)
     except:
         return{
         "statusCode": 400,
         "headers":{
-            "Content-Type": "application/json"
+            "Content-type": "application/json;charset=UTF-8"
         },
         "body":json.dumps({
             "message":"整数値を入力してください。"
@@ -85,6 +85,9 @@ def lambda_handler(event, context):
 
     return {
         "statusCode": 200,
+        "headers":{
+            "Content-type": "application/json;charset=UTF-8"
+        },
         "body": json.dumps({
             "message": n,
             # "location": ip.text.replace("\n", "")
