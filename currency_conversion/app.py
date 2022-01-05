@@ -28,10 +28,9 @@ def split_numbers(text: str):
     return number_list
 
 def is_currency_conversion(numbers:List[int])->str:
-    d = numbers[0]/numbers[1]
-    d = int(d)
-    s = (d*100)/numbers[1]
-    s = int(s)
+    d = numbers[0]//numbers[1]
+    s = numbers[0]%numbers[1]
+    s = s*100//numbers[1]
     return d,s
 
 
